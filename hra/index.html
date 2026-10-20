@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Chytej, co se počítá – hra Šimona Kořenýho</title>
+<meta name="description" content="Retro hra podle Nu, pogodi: chytej úkoly do koše a pasti nech spadnout.">
+<link rel="canonical" href="https://simonkoreny.cz/hra/">
+<meta name="theme-color" content="#F0EFEE">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="Šimon Kořený">
+<meta property="og:title" content="Chytej, co se počítá – hra Šimona Kořenýho">
+<meta property="og:description" content="Retro hra podle Nu, pogodi: chytej úkoly do koše a pasti nech spadnout.">
+<meta property="og:url" content="https://simonkoreny.cz/hra/">
+<meta property="og:image" content="https://simonkoreny.cz/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Fira+Mono:wght@500&family=Fira+Sans:wght@400;600&family=VT323&display=swap">
+<style>
+/* Layout: a faithful 1984-style LCD handheld (cream face plate, colour-printed backdrop under a monochrome LCD), two case skins, rules below. Single light page. */
+:root {
+  --bg: #F0EFEE;
+  --ink: #000000;
+  --ink-2: #212121;
+  --purple: #5F449A;
+  --purple-dk: #32235F;
+  --purple-lt: #7D64AB;
+  --skin: #EAB275;
+  --muted: #5b5566;
+  --display: "Alfa Slab One", Rockwell, Georgia, serif;
+  --body: "Fira Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font: "Bricolage Grotesque", Georgia, serif;
+  --purple-soft: #D9CFF0;
+  --fs-xs: .8125rem; --fs-base: 1rem; --fs-md: 1.25rem; --fs-lg: 1.5625rem; --fs-xl: 2.5rem;
+  color-scheme: light;
+}
+.device[data-skin="original"] {
+  --case: #d9442c; --case-hi: #f0694c; --case-lo: #9b2816;
+  --plate: #efe5c9; --plate-lo: #ddd0ad; --line: #3a2f26; --title: #d23a25;
+  --btn: #e04a32; --btn-hi: #ff9172; --btn-lo: #8c2312; --bezel: #c9361f;
+}
+.device[data-skin="fusaty"] {
+  --case: #5F449A; --case-hi: #8a72bf; --case-lo: #32235F;
+  --plate: #F0EFEE; --plate-lo: #dcd8de; --line: #212121; --title: #5F449A;
+  --btn: #5F449A; --btn-hi: #a993d6; --btn-lo: #32235F; --bezel: #212121;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 40px;
+}
+.wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+@view-transition { navigation: auto; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.top img { width: 112px; height: auto; display: block; }
+.back { min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 700; font-size: 15px; text-decoration: none; }
+
+/* ---------- device ---------- */
+.device-wrap { container-type: inline-size; width: min(100%, calc((100dvh - 150px) * 1.66)); min-width: min(280px, 100%); margin: 0 auto; }
+/* phone on its side: hide the logo and let the toy fill the screen height */
+@media (orientation: landscape) and (max-height: 520px) {
+  body { padding-block: 6px 24px; }
+  .top { display: none; }
+  .device-wrap { width: min(100%, calc((100dvh - 12px) * 1.66)); }
+}
+.device {
+  font-family: var(--body); font-size: var(--fs-base); color: var(--ink-2); line-height: 1.6;
+  background: linear-gradient(170deg, var(--case-hi), var(--case) 22%, var(--case) 70%, var(--case-lo));
+  border-radius: 4.2cqw; padding: 2.4cqw;
+  box-shadow: inset 0 0.4cqw 0 rgba(255,255,255,.28), inset 0 -0.7cqw 0 rgba(0,0,0,.28), 0 2.5cqw 5cqw rgba(40, 20, 10, .32);
+}
+.plate {
+  position: relative; aspect-ratio: 100 / 58; border-radius: 2.6cqw;
+  background: linear-gradient(180deg, var(--plate), var(--plate) 70%, var(--plate-lo));
+  box-shadow: inset 0 0 0 0.25cqw rgba(0,0,0,.08);
+}
+.plate > * { position: absolute; }
+.badge { left: 4.5%; top: 8.6%; width: 10%; aspect-ratio: 1; border: 0.3cqw solid var(--line); display: grid; place-items: center; font-family: var(--display); font-size: 4.4cqw; color: var(--line); line-height: 1; }
+.frame { left: 16%; top: 6%; width: 68%; height: 88%; border: 0.3cqw solid var(--line); border-radius: 1.6cqw; }
+.bezel { left: 17.6%; top: 12.4%; width: 64.8%; background: var(--bezel); border-radius: 1.1cqw; padding: 1.5cqw; box-shadow: inset 0 0.3cqw 0.5cqw rgba(0,0,0,.35); }
+.screen { position: relative; aspect-ratio: 400 / 260; border-radius: 0.5cqw; overflow: hidden; background: #cfd1a7; box-shadow: inset 0 0 1.4cqw rgba(0,0,0,.35); cursor: pointer; touch-action: manipulation; }
+.screen canvas { display: block; width: 100%; height: 100%; }
+.screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(128deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.06) 32%, transparent 33%, transparent 100%); }
+
+.rbtn {
+  width: 10.5%; aspect-ratio: 1; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  background: radial-gradient(circle at 36% 30%, var(--btn-hi), var(--btn) 48%, var(--btn-lo));
+  box-shadow: 0 0.6cqw 0 var(--btn-lo), 0 1cqw 1.4cqw rgba(0,0,0,.35);
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .05s, box-shadow .05s;
+}
+.rbtn:active, .rbtn.on { transform: translateY(0.5cqw); box-shadow: 0 0.1cqw 0 var(--btn-lo), 0 0.4cqw 0.6cqw rgba(0,0,0,.35); }
+#b-LU { left: 5%; top: 46.6%; } #b-LD { left: 5%; top: 70.7%; }
+#b-RU { right: 5%; top: 46.6%; } #b-RD { right: 5%; top: 70.7%; }
+.tri { width: 3.2%; aspect-ratio: 1; background: var(--line); }
+.tri.lu { left: 1.3%; top: 40.5%; clip-path: polygon(0 0, 100% 35%, 35% 100%); }
+.tri.ld { left: 1.3%; top: 88%; clip-path: polygon(0 100%, 35% 0, 100% 65%); }
+.tri.ru { right: 1.3%; top: 40.5%; clip-path: polygon(100% 0, 65% 100%, 0 35%); }
+.tri.rd { right: 1.3%; top: 88%; clip-path: polygon(100% 100%, 0 65%, 65% 0); }
+
+.pill {
+  left: 85.5%; width: 6.6%; height: 5.7%; border-radius: 999px; border: 0; padding: 0; cursor: pointer;
+  background: linear-gradient(180deg, var(--btn-hi), var(--btn) 45%, var(--btn-lo));
+  box-shadow: 0 0.35cqw 0 var(--btn-lo); touch-action: manipulation;
+}
+.pill:active { transform: translateY(0.3cqw); box-shadow: 0 0.05cqw 0 var(--btn-lo); }
+#btnA { top: 6.9%; } #btnB { top: 20.7%; } #btnT { top: 34.5%; }
+.plabel { left: 84.5%; width: 8.6%; text-align: center; font-size: 1.75cqw; line-height: 1; color: var(--line); font-weight: 600; }
+.plabel.a { top: 13.6%; } .plabel.b { top: 27.4%; } .plabel.t { top: 41.2%; }
+.ind { left: 93.6%; display: flex; flex-direction: column; align-items: center; gap: 0.5cqw; width: 3.4%; }
+.ind svg { width: 2.2cqw; height: 2.2cqw; display: block; }
+.ind i { display: block; width: 1.3cqw; height: 1.3cqw; border-radius: 50%; background: #1a1410; box-shadow: inset 0 0.2cqw 0.2cqw rgba(0,0,0,.6), 0 0.1cqw 0 rgba(255,255,255,.5); }
+.ind.bell { top: 6.2%; } .ind.clock { top: 20%; }
+button:focus-visible { outline: 3px solid var(--skin); outline-offset: 3px; }
+
+.under { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.skins { display: flex; gap: 8px; align-items: center; font-size: 15px; font-weight: 600; }
+.skins button { font: 700 15px var(--font); min-height: 40px; border: 3px solid var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 0 14px; cursor: pointer; }
+.skins button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.hint { font-size: 15px; color: var(--muted); }
+.rotate { display: none; }
+@media (max-width: 600px) and (orientation: portrait) { .rotate { display: inline; } }
+
+/* ---------- texty pod hrou: plakát ---------- */
+.card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; padding-top: 40px; }
+.card h2 { font-family: var(--font); font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: -.035em; color: var(--ink); margin: 0 0 20px; text-wrap: balance; }
+.card p { margin: 0 0 12px; max-width: 58ch; }
+.card p:last-child { margin-bottom: 0; }
+.muted { color: var(--muted); }
+.legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.legend li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; line-height: 1.3; }
+.legend canvas { width: 34px; height: 34px; border-radius: 6px; display: block; border: 2px solid var(--ink); }
+.legend .pts { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--purple); white-space: nowrap; }
+.legend .pts.neg { color: var(--ink); }
+.legend .sep { display: block; margin-top: 16px; font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+.result { grid-column: 1 / -1; background: var(--purple); color: var(--bg); padding: 28px 22px; display: grid; gap: 12px; }
+.result .kicker { font-size: 16px; font-weight: 600; color: var(--purple-soft); }
+.result .big { font-size: 46px; font-weight: 800; line-height: .95; letter-spacing: -.04em; text-wrap: balance; }
+.result p { margin: 0; font-size: 19px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 2px solid var(--purple-soft); border-radius: 999px; padding: 2px 10px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.result .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.again { font: 800 18px var(--font); min-height: 56px; background: var(--skin); color: var(--ink); border: 0; border-radius: 999px; padding: 0 26px; cursor: pointer; }
+.result .row .muted { color: var(--purple-soft); font-size: 15px; }
+footer.foot { margin: 80px calc(-1 * max(16px, env(safe-area-inset-left, 0px))) -40px; background: var(--ink); color: var(--bg); }
+footer.foot .in { max-width: 900px; margin: 0 auto; padding: 48px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+footer.foot .back { background: var(--skin); color: var(--ink); min-height: 56px; font-size: 18px; padding: 0 24px; }
+footer.foot p { margin: 0; font-size: 15px; color: #cfcad3; }
+@media (max-width: 640px) { .card { grid-template-columns: 1fr; gap: 56px; } .card h2 { font-size: 40px; } }
+
+/* úvodní fialová obrazovka: navazuje na přechod z CV */
+.splash { position: fixed; inset: 0; z-index: 30; background: var(--purple); color: var(--bg); clip-path: circle(150% at 50% 50%); transition: clip-path .75s cubic-bezier(.7, 0, .25, 1); }
+html.from-cv .splash { transition-duration: .45s; transition-timing-function: cubic-bezier(.4, 0, .2, 1); }
+html.from-cv .splash .in { visibility: hidden; }
+.splash.out { clip-path: circle(0% at 50% 40%); pointer-events: none; }
+.splash .in { height: 100%; max-width: 560px; margin: 0 auto; padding: calc(32px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; justify-content: center; }
+.splash .kicker { margin: 0; font-size: 18px; font-weight: 600; color: var(--purple-soft); }
+.splash h1 { margin: 10px 0 0; font-size: 60px; line-height: .92; font-weight: 800; letter-spacing: -.045em; text-wrap: balance; }
+.splash p.how { margin: 20px 0 0; font-size: 18px; max-width: 34ch; }
+.splash .btns { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; }
+.splash .btn { min-height: 56px; padding: 0 24px; border-radius: 999px; font: 800 18px var(--font); cursor: pointer; }
+.splash .btn.main { background: var(--skin); color: var(--ink); border: 0; }
+.splash .btn.ghost { background: transparent; color: var(--bg); border: 3px solid var(--bg); }
+@media (prefers-reduced-motion: reduce) { .rbtn, .pill, .splash { transition: none; } }
+</style>
+</head>
+<body>
+
+<script>if (location.hash === '#start') document.documentElement.classList.add('from-cv');</script>
+<div class="splash" id="splash">
+  <div class="in">
+    <p class="kicker">Fusaty Tata, hra na 45 sekund</p>
+    <h1>Chytej, co se počítá.</h1>
+    <p class="how">Úkoly padají ze čtyř stran. Chytáš je do koše, pasti necháš spadnout.</p>
+    <div class="btns">
+      <button class="btn main" id="goA">Hrát</button>
+      <button class="btn ghost" id="goB">Svižněji</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="top">
+    <img src="assets/logo-light.png" alt="Fusaty Tata, since 2020" width="706" height="212">
+    <a class="back" href="../cv/">Zpět do CV</a>
+  </div>
+
+  <div class="device-wrap">
+    <div class="device" id="device" data-skin="fusaty">
+      <div class="plate">
+        <div class="badge" aria-hidden="true">F.</div>
+        <div class="frame" aria-hidden="true"></div>
+        <div class="bezel">
+          <div class="screen" id="screen"><canvas id="lcd" width="400" height="260" aria-label="Herní displej"></canvas></div>
+        </div>
+
+        <span class="tri lu" aria-hidden="true"></span><span class="tri ld" aria-hidden="true"></span>
+        <span class="tri ru" aria-hidden="true"></span><span class="tri rd" aria-hidden="true"></span>
+        <button class="rbtn" id="b-LU" data-pos="LU" aria-label="Vlevo nahoru"></button>
+        <button class="rbtn" id="b-LD" data-pos="LD" aria-label="Vlevo dolů"></button>
+        <button class="rbtn" id="b-RU" data-pos="RU" aria-label="Vpravo nahoru"></button>
+        <button class="rbtn" id="b-RD" data-pos="RD" aria-label="Vpravo dolů"></button>
+
+        <button class="pill" id="btnA" aria-label="Hra A"></button><span class="plabel a">hra A</span>
+        <button class="pill" id="btnB" aria-label="Hra B"></button><span class="plabel b">hra B</span>
+        <button class="pill" id="btnT" aria-label="Čas, pauza"></button><span class="plabel t">čas</span>
+        <div class="ind bell" aria-hidden="true">
+          <svg viewBox="0 0 20 20"><path d="M10 3c-3 0-5 2.2-5 5.2V12l-1.6 2.4h13.2L15 12V8.2C15 5.2 13 3 10 3z" fill="none" stroke="#3a2f26" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.2 16.2a1.9 1.9 0 0 0 3.6 0" fill="none" stroke="#3a2f26" stroke-width="1.6"/></svg>
+          <i></i>
+        </div>
+        <div class="ind clock" aria-hidden="true">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.6" fill="none" stroke="#3a2f26" stroke-width="1.6"/><path d="M10 6v4.2l2.8 1.8" fill="none" stroke="#3a2f26" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <i></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="under">
+    <div class="skins" role="group" aria-label="Barva krabičky">
+      <span>Krabička:</span>
+      <button id="skin-fusaty" aria-pressed="true">Fusaty</button>
+      <button id="skin-original" aria-pressed="false">Originál</button>
+    </div>
+    <span class="hint"><span class="rotate">Otoč telefon na šířku. </span>Q A P L nebo šipky, start mezerníkem.</span>
+  </div>
+
+  <section class="card">
+    <div class="result" id="result" hidden>
+      <span class="kicker" id="resKicker"></span>
+      <div class="big" id="resTitle"></div>
+      <p id="resLine"></p>
+      <div class="chips" id="resChips"></div>
+      <div class="row">
+        <button class="again" id="againBtn">Znovu</button>
+        <span class="muted" id="resBest"></span>
+      </div>
+    </div>
+    <div>
+      <h2>Jak se hraje</h2>
+      <p>Úkoly padají ze čtyř stran. Chytej je do koše.</p>
+      <p>Co upustíš, je prošvihnutý deadline. Tři deadliny a konec. Kafe jeden vrátí.</p>
+      <p>Černé kostky jsou pasti. Ty nech spadnout.</p>
+      <p class="muted">Hra A začíná v klidu, hra B rovnou svižněji. Tlačítko čas hru pozastaví.</p>
+    </div>
+    <div>
+      <h2>Ceník priorit</h2>
+      <ul class="legend" id="legend"></ul>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div class="in">
+    <a class="back" href="../cv/">Zpět do CV</a>
+    <p>Prototyp 0.9</p>
+  </div>
+</footer>
+
+<script>
+// ---------- Config: swap this object to retarget the game ----------
+const CONFIG = {
+  dayMs: 45000,
+  startHour: 9,
+  dayMinutes: 480,
+  lives: 3,
+  // difficulty: start calm, ramp up late (progress is eased by the exponent)
+  tickMs: [620, 300],
+  spawnP: [0.5, 0.8],
+  ease: 1.3,
+  maxOnScreen: [3, 4],
+  minGap: [2, 1],
+  hardStart: 0.35,
+  // each source drops its own mix of items; the conscience trap can come from anywhere
+  chutes: {
+    LU: { label: 'KLIENT',    mix: { ukol: 35, docx: 20, klient: 25, napad: 10, svedomi: 5 } },
+    LD: { label: 'KREATIVCI', mix: { napad: 40, ukol: 30, docx: 15, klient: 5, svedomi: 5 } },
+    RU: { label: 'INBOX',     mix: { ukol: 35, docx: 35, meeting: 30, svedomi: 5 } },
+    RD: { label: 'KUCHYŇKA',  mix: { andulka: 50, kafe: 25, napad: 15, ukol: 10, svedomi: 5 } }
+  },
+  items: {
+    ukol:    { name: 'Běžný úkol běžného projekťáka',   pts: 1, pop: '+1' },
+    docx:    { name: 'Převést docx do pdf a obráceně',  pts: 2, pop: '+2' },
+    napad:   { name: 'Všespásný nápad',                 pts: 3, pop: '+3 heuréka' },
+    andulka: { name: 'Zeptat se, jak se má kolegova andulka', pts: 4, pop: '+4 andulka OK' },
+    klient:  { name: 'Placák se spokojeným klientem',   pts: 5, pop: '+5 placák' },
+    kafe:    { name: 'Kafe',                            pts: 0, life: true },
+    meeting: { name: 'This could have been an email',   pts: -2, trap: true, pop: '-2' },
+    svedomi: { name: 'Dělat cokoliv bez mého nejlepšího vědomí a svědomí', pts: 0, trap: true, costsLife: true, pop: '-1 život' }
+  }
+};
+
+const W = 400, H = 260;
+const C = {
+  lcd: '#cfd1a7', ink: '#24281b', glass: 'rgba(207,209,167,0.22)', shadow: 'rgba(36,40,27,0.26)',
+  wood: '#d39a59', woodDk: '#a8743c', grass: '#93b56c', grassDk: '#6f9150', bush: '#7aa557',
+  purple: '#8d77b8', purpleDk: '#5F449A', skin: '#e7ad6e', blue: '#7b97ad', print: '#5a4630'
+};
+const GHOST = 0.06;
+const LCDFONT = '"VT323", "Courier New", monospace';
+
+// ---------- head: turn the colour illustration into an LCD segment ----------
+const head = new Image();
+let monoHead = null;
+head.onload = () => { monoHead = head; };
+head.src = 'assets/hlava-lcd.png';
+const HEAD = { w: 80, h: 122, x: 160, y: 50 };
+
+const cv = document.getElementById('lcd');
+const ctx = cv.getContext('2d');
+const screenEl = document.getElementById('screen');
+
+function fit() {
+  const r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(r.width * dpr);
+  cv.height = Math.round(r.height * dpr);
+}
+new ResizeObserver(fit).observe(cv);
+fit();
+
+// ---------- geometry ----------
+const isL = c => c[0] === 'L';
+const isU = c => c[1] === 'U';
+function slot(chute, i) {
+  const y0 = isU(chute) ? 66 : 136;
+  const x = 22 + i * 24, y = y0 + i * 7;
+  return { x: isL(chute) ? x : W - x, y };
+}
+function basket(pos) { return { x: isL(pos) ? 144 : 256, y: isU(pos) ? 104 : 174 }; }
+function fallSpot(left) { return { x: left ? 126 : 274, y: 226 }; }
+
+// ---------- drawing primitives ----------
+function rr(c, x, y, w, h, r) {
+  c.beginPath();
+  c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function drawIcon(c, type, x, y, s = 1, accent) {
+  const ink = c.fillStyle;
+  accent = accent || c.strokeStyle;
+  c.save(); c.translate(x, y); c.scale(s, s);
+  c.lineWidth = 2.4; c.lineCap = 'round'; c.lineJoin = 'round';
+  c.beginPath();
+  if (type === 'ukol') {
+    c.strokeRect(-8, -8, 16, 16);
+    c.strokeStyle = accent; c.lineWidth = 3;
+    c.beginPath(); c.moveTo(-4.5, 0); c.lineTo(-1, 4); c.lineTo(5, -4.5); c.stroke();
+  } else if (type === 'docx') {
+    c.moveTo(-7, -9); c.lineTo(3, -9); c.lineTo(7, -5); c.lineTo(7, 9); c.lineTo(-7, 9); c.closePath(); c.stroke();
+    c.strokeStyle = accent; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(-3.5, -1); c.lineTo(3.5, -1); c.moveTo(1.5, -3); c.lineTo(3.5, -1); c.lineTo(1.5, 1);
+    c.moveTo(3.5, 4.5); c.lineTo(-3.5, 4.5); c.moveTo(-1.5, 2.5); c.lineTo(-3.5, 4.5); c.lineTo(-1.5, 6.5); c.stroke();
+  } else if (type === 'napad') {
+    c.arc(0, -3, 6.5, 0, Math.PI * 2); c.stroke();
+    c.fillRect(-3.5, 4.5, 7, 4.5);
+    c.strokeStyle = accent;
+    c.beginPath(); c.moveTo(0, -13); c.lineTo(0, -11.5); c.moveTo(-9.5, -6.5); c.lineTo(-11, -7.5); c.moveTo(9.5, -6.5); c.lineTo(11, -7.5); c.stroke();
+  } else if (type === 'andulka') {
+    c.save(); c.translate(1, 2); c.rotate(-0.5); c.beginPath(); c.ellipse(0, 0, 7, 4.8, 0, 0, Math.PI * 2); c.fill(); c.restore();
+    c.beginPath(); c.arc(-4, -4.5, 4, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(5, 4); c.lineTo(11, 10); c.moveTo(4, 6); c.lineTo(8, 11); c.stroke();
+    c.fillStyle = accent; c.beginPath(); c.moveTo(-7.5, -5); c.lineTo(-11, -3.5); c.lineTo(-7.5, -2.5); c.closePath(); c.fill();
+    c.fillStyle = C.lcd; c.fillRect(-5.5, -6, 1.8, 1.8);
+  } else if (type === 'klient') {
+    rr(c, -5, -1, 10, 10, 3); c.fill();
+    c.lineWidth = 2.6; c.beginPath();
+    for (const fx of [-3.8, -1.3, 1.2, 3.7]) { c.moveTo(fx, 0); c.lineTo(fx, fx === -3.8 || fx === 3.7 ? -6.5 : -8.5); }
+    c.moveTo(-4, 5); c.lineTo(-8.5, 1); c.stroke();
+    c.strokeStyle = accent; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(8, -7); c.lineTo(10.5, -9.5); c.moveTo(8.5, -3); c.lineTo(11.5, -3.5); c.moveTo(6, -10); c.lineTo(6.5, -12.5); c.stroke();
+  } else if (type === 'kafe') {
+    rr(c, -7, -3, 11, 11, 2); c.fill();
+    c.beginPath(); c.arc(5, 2.5, 3.5, -Math.PI / 2, Math.PI / 2); c.stroke();
+    c.strokeStyle = accent;
+    c.beginPath(); c.moveTo(-4, -6); c.quadraticCurveTo(-6, -8.5, -4, -11); c.moveTo(1, -6); c.quadraticCurveTo(-1, -8.5, 1, -11); c.stroke();
+  } else if (type === 'meeting') {
+    c.strokeRect(-8, -6, 16, 12);
+    c.beginPath(); c.moveTo(-8, -6); c.lineTo(0, 1); c.lineTo(8, -6); c.stroke();
+  } else if (type === 'svedomi') {
+    c.arc(0, 2, 6.5, 0, Math.PI * 2); c.stroke();
+    c.beginPath(); c.moveTo(-5, -2); c.lineTo(-7.5, -9); c.lineTo(-1.5, -4); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(5, -2); c.lineTo(7.5, -9); c.lineTo(1.5, -4); c.closePath(); c.fill();
+    c.fillRect(-3.5, 0, 2, 2); c.fillRect(1.5, 0, 2, 2);
+    c.lineWidth = 1.8; c.beginPath(); c.moveTo(-3.5, 4.5); c.lineTo(-1, 5.8); c.lineTo(1, 4.5); c.lineTo(3.5, 5.8); c.stroke();
+  } else if (type === 'slot') {
+    c.arc(0, 0, 8.5, 0, Math.PI * 2); c.stroke();
+  } else if (type === 'splat') {
+    for (let k = 0; k < 10; k++) {
+      const a = k / 10 * Math.PI * 2, r = k % 2 ? 4 : 10;
+      const px = Math.cos(a) * r, py = Math.sin(a) * r * 0.6;
+      k ? c.lineTo(px, py) : c.moveTo(px, py);
+    }
+    c.closePath(); c.fill();
+  }
+  c.restore();
+  c.fillStyle = ink;
+}
+function drawItem(c, type, x, y, s = 1) {
+  if (!CONFIG.items[type].trap) { drawIcon(c, type, x, y, s); return; }
+  c.save();
+  c.fillStyle = C.ink; rr(c, x - 11 * s, y - 11 * s, 22 * s, 22 * s, 4 * s); c.fill();
+  c.shadowColor = 'transparent';
+  c.fillStyle = C.lcd; c.strokeStyle = C.lcd;
+  drawIcon(c, type, x, y, s * 0.82, C.lcd);
+  c.restore();
+}
+function heart(c, x, y, s) {
+  c.beginPath();
+  c.moveTo(x, y + s * 0.9);
+  c.bezierCurveTo(x - s * 1.4, y - s * 0.1, x - s * 0.7, y - s * 1.1, x, y - s * 0.35);
+  c.bezierCurveTo(x + s * 0.7, y - s * 1.1, x + s * 1.4, y - s * 0.1, x, y + s * 0.9);
+  c.fill();
+}
+const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
+function segPoly(c, x, y, w, h, horiz) {
+  // hexagonal LCD segment
+  c.beginPath();
+  if (horiz) { const k = h / 2; c.moveTo(x, y + k); c.lineTo(x + k, y); c.lineTo(x + w - k, y); c.lineTo(x + w, y + k); c.lineTo(x + w - k, y + h); c.lineTo(x + k, y + h); }
+  else { const k = w / 2; c.moveTo(x + k, y); c.lineTo(x + w, y + k); c.lineTo(x + w, y + h - k); c.lineTo(x + k, y + h); c.lineTo(x, y + h - k); c.lineTo(x, y + k); }
+  c.closePath(); c.fill();
+}
+function digit(c, x, y, d, w = 13, h = 24, t = 3.2) {
+  const hh = h / 2, g = 0.6;
+  const segs = {
+    a: [x + t / 2 + g, y, w - t - 2 * g, t, 1], g: [x + t / 2 + g, y + hh - t / 2, w - t - 2 * g, t, 1], d: [x + t / 2 + g, y + h - t, w - t - 2 * g, t, 1],
+    f: [x, y + t / 2 + g, t, hh - t - g, 0], b: [x + w - t, y + t / 2 + g, t, hh - t - g, 0],
+    e: [x, y + hh + g, t, hh - t / 2 - 2 * g, 0], c: [x + w - t, y + hh + g, t, hh - t / 2 - 2 * g, 0]
+  };
+  const on = d === null ? '' : SEG[d];
+  for (const k in segs) {
+    const [sx, sy, sw, sh, hz] = segs[k];
+    if (on.includes(k)) segPoly(c, sx, sy, sw, sh, hz);
+    else { c.save(); c.shadowColor = 'transparent'; c.globalAlpha = GHOST; segPoly(c, sx, sy, sw, sh, hz); c.restore(); }
+  }
+}
+function armPath(c, pos) {
+  const b = basket(pos), L = isL(pos);
+  c.lineWidth = 6; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(L ? 180 : 220, 170); c.lineTo(L ? b.x + 13 : b.x - 13, b.y + 3); c.stroke();
+  c.lineWidth = 3.2; c.lineJoin = 'round';
+  c.beginPath();
+  c.moveTo(b.x - 15, b.y - 6); c.lineTo(b.x - 11, b.y + 7); c.lineTo(b.x + 11, b.y + 7); c.lineTo(b.x + 15, b.y - 6);
+  c.stroke();
+}
+function drawBody(c) {
+  c.lineWidth = 9; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(192, 204); c.lineTo(189, 233); c.lineTo(182, 234); c.moveTo(208, 204); c.lineTo(211, 233); c.lineTo(218, 234); c.stroke();
+  c.beginPath();
+  c.moveTo(178, 168); c.quadraticCurveTo(200, 156, 222, 168);
+  c.lineTo(216, 212); c.quadraticCurveTo(200, 216, 184, 212); c.closePath(); c.fill();
+}
+function drawHead(c) {
+  if (monoHead) c.drawImage(monoHead, HEAD.x, HEAD.y, HEAD.w, HEAD.h);
+  else { c.beginPath(); c.arc(200, 110, 22, 0, Math.PI * 2); c.fill(); }
+}
+
+// ---------- printed backdrop (colour layer under the LCD) ----------
+let backdrop = null;
+function buildBackdrop() {
+  const scale = Math.max(2, Math.ceil(cv.width / W));
+  const b = document.createElement('canvas'); b.width = W * scale; b.height = H * scale;
+  const g = b.getContext('2d'); g.scale(scale, scale);
+  g.fillStyle = C.lcd; g.fillRect(0, 0, W, H);
+
+  // grass and bushes
+  g.fillStyle = C.grass; g.fillRect(0, 237, W, H - 237);
+  g.fillStyle = C.grassDk;
+  for (let x = 4; x < W; x += 13) { g.beginPath(); g.moveTo(x, 239); g.lineTo(x + 3, 233); g.lineTo(x + 6, 239); g.fill(); }
+  const bush = (cx, cy) => {
+    g.fillStyle = C.bush;
+    for (const [dx, dy, r] of [[-12, 4, 9], [0, -2, 11], [12, 4, 9], [5, 7, 8], [-5, 7, 8]]) { g.beginPath(); g.arc(cx + dx, cy + dy, r, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = C.grassDk; g.beginPath(); g.arc(cx - 3, cy - 3, 2, 0, Math.PI * 2); g.arc(cx + 7, cy + 2, 1.6, 0, Math.PI * 2); g.fill();
+  };
+  bush(34, 226); bush(W - 34, 226);
+  for (const [x, col] of [[70, C.purple], [86, C.skin], [318, C.skin], [334, C.purple], [176, C.purple], [226, C.skin]]) {
+    g.fillStyle = col; g.beginPath(); g.arc(x, 246, 2.6, 0, Math.PI * 2); g.fill();
+    g.fillStyle = C.grassDk; g.fillRect(x - 0.6, 248, 1.2, 5);
+  }
+
+  // ramps with fence posts
+  for (const ch of Object.keys(CONFIG.chutes)) {
+    const L = isL(ch), y0 = isU(ch) ? 66 : 136;
+    const ry = x => y0 + 11 + (x - 22) * (7 / 24);
+    const X = x => L ? x : W - x;
+    g.strokeStyle = C.woodDk; g.lineWidth = 2;
+    for (const px of [16, 56, 96]) { g.beginPath(); g.moveTo(X(px), ry(px) + 2); g.lineTo(X(px), ry(px) + 14); g.stroke(); }
+    g.strokeStyle = C.wood; g.lineWidth = 5; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(X(6), ry(6)); g.lineTo(X(132), ry(132)); g.stroke();
+    g.strokeStyle = C.woodDk; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(X(6), ry(6) + 2.6); g.lineTo(X(132), ry(132) + 2.6); g.stroke();
+  }
+
+  // source pictograms + labels
+  const label = (txt, x, y, right) => { g.fillStyle = C.print; g.font = '500 8px "Fira Mono", ui-monospace, monospace'; g.textAlign = right ? 'right' : 'left'; g.fillText(txt, x, y); };
+  // Klient: office building
+  g.fillStyle = C.purple; g.fillRect(8, 40, 16, 14);
+  g.fillStyle = C.purpleDk; g.beginPath(); g.moveTo(6, 41); g.lineTo(16, 34); g.lineTo(26, 41); g.closePath(); g.fill();
+  g.fillStyle = C.lcd; for (const [wx, wy] of [[11, 43], [18, 43], [11, 48]]) g.fillRect(wx, wy, 3, 3); g.fillStyle = C.purpleDk; g.fillRect(18, 48, 3, 6);
+  label(CONFIG.chutes.LU.label, 30, 51);
+  // Kreativci: paint palette
+  g.fillStyle = C.skin; g.beginPath(); g.ellipse(16, 116, 9, 7, -0.2, 0, Math.PI * 2); g.fill();
+  for (const [dx, dy, col] of [[-4, -2, C.purpleDk], [1, -4, C.grassDk], [5, -1, C.blue]]) { g.fillStyle = col; g.beginPath(); g.arc(16 + dx, 116 + dy, 1.8, 0, Math.PI * 2); g.fill(); }
+  g.fillStyle = C.lcd; g.beginPath(); g.arc(19, 120, 1.8, 0, Math.PI * 2); g.fill();
+  label(CONFIG.chutes.LD.label, 30, 121);
+  // Inbox: letter tray with an envelope
+  g.fillStyle = C.skin; g.fillRect(W - 24, 39, 14, 10);
+  g.strokeStyle = C.print; g.lineWidth = 1; g.strokeRect(W - 24, 39, 14, 10);
+  g.beginPath(); g.moveTo(W - 24, 39); g.lineTo(W - 17, 45); g.lineTo(W - 10, 39); g.stroke();
+  g.fillStyle = C.purpleDk; g.beginPath(); g.moveTo(W - 28, 47); g.lineTo(W - 25, 55); g.lineTo(W - 9, 55); g.lineTo(W - 6, 47); g.lineTo(W - 9, 47); g.lineTo(W - 11, 51); g.lineTo(W - 23, 51); g.lineTo(W - 25, 47); g.closePath(); g.fill();
+  label(CONFIG.chutes.RU.label, W - 32, 51, true);
+  // Kitchen: kettle
+  g.fillStyle = C.purple; g.beginPath(); g.ellipse(W - 16, 117, 8, 6, 0, 0, Math.PI * 2); g.fill();
+  g.beginPath(); g.moveTo(W - 22, 115); g.lineTo(W - 29, 110); g.lineTo(W - 22, 119); g.closePath(); g.fill();
+  g.fillStyle = C.purpleDk; g.fillRect(W - 19, 109, 6, 3);
+  g.strokeStyle = C.purpleDk; g.lineWidth = 1.6; g.beginPath(); g.arc(W - 8, 117, 3.5, -Math.PI / 2, Math.PI / 2); g.stroke();
+  g.strokeStyle = C.print; g.lineWidth = 1; g.beginPath(); g.moveTo(W - 30, 106); g.quadraticCurveTo(W - 32, 103, W - 30, 100); g.stroke();
+  label(CONFIG.chutes.RD.label, W - 34, 121, true);
+
+
+  // LCD glass tint over the print
+  g.fillStyle = C.glass; g.fillRect(0, 0, W, H);
+  backdrop = b;
+}
+let lastW = 0;
+
+// ---------- state ----------
+const state = { mode: 'idle', level: 'A', pos: 'LD', items: [], score: 0, lives: CONFIG.lives, caught: {}, dropped: 0, avoided: 0,
+  noSplat: false, sinceSpawn: 0, userPaused: false,
+  t0: 0, paused: 0, pauseStart: 0, lastTick: 0, missUntil: 0, missLeft: true, pops: [], endElapsed: 0, overAt: 0, win: false };
+
+const lerp = (a, b, t) => a + (b - a) * Math.min(1, Math.max(0, t));
+const diff = prog => state.level === 'B' ? CONFIG.hardStart + (1 - CONFIG.hardStart) * Math.min(1, prog) : Math.min(1, prog);
+function elapsed(now) {
+  if (state.mode === 'idle') return 0;
+  if (state.mode === 'over') return state.endElapsed;
+  const ref = (state.mode === 'miss' || state.mode === 'paused') ? state.pauseStart : now;
+  return Math.max(0, ref - state.t0 - state.paused);
+}
+function pickType(chute) {
+  const entries = Object.entries(CONFIG.chutes[chute].mix);
+  let r = Math.random() * entries.reduce((s, [, w]) => s + w, 0);
+  for (const [k, w] of entries) { if ((r -= w) < 0) return k; }
+  return entries[0][0];
+}
+function spawn() {
+  const chutes = Object.keys(CONFIG.chutes);
+  const chute = chutes[Math.floor(Math.random() * chutes.length)];
+  state.items.push({ chute, i: 0, type: pickType(chute) });
+}
+function setPos(p) {
+  state.pos = p;
+  document.querySelectorAll('.rbtn').forEach(b => b.classList.toggle('on', b.dataset.pos === p));
+}
+
+function start(level = 'A') {
+  const now = performance.now();
+  Object.assign(state, { mode: 'play', level, items: [], score: 0, lives: CONFIG.lives, caught: {}, dropped: 0, avoided: 0,
+    noSplat: false, sinceSpawn: 0, userPaused: false, t0: now, paused: 0, lastTick: now, pops: [], endElapsed: 0 });
+  spawn();
+  document.getElementById('result').hidden = true;
+}
+
+function tick(now) {
+  const prog = elapsed(now) / CONFIG.dayMs;
+  let missed = false;
+  const keep = [];
+  for (const it of state.items) {
+    it.i++;
+    if (it.i < 5) { keep.push(it); continue; }
+    const def = CONFIG.items[it.type];
+    if (state.pos === it.chute) {
+      state.caught[it.type] = (state.caught[it.type] || 0) + 1;
+      const b = basket(it.chute);
+      let txt = def.pop || ('+' + def.pts);
+      if (def.trap) {
+        if (def.costsLife) {
+          state.lives--;
+          if (state.lives <= 0) { state.noSplat = true; missed = true; }
+        } else state.score = Math.max(0, state.score + def.pts);
+      } else if (def.life) {
+        if (state.lives < CONFIG.lives) { state.lives++; txt = '+1 život'; }
+        else { state.score += 1; txt = '+1'; }
+      } else state.score += def.pts;
+      state.pops.push({ x: b.x, y: b.y - 20, text: txt, until: now + 650 });
+    } else if (def.life || def.trap) {
+      const f = fallSpot(isL(it.chute));
+      if (def.trap) state.avoided++;
+      state.pops.push({ x: f.x, y: f.y - 18, text: def.trap ? 'ne, díky' : 'kafe vychladlo', until: now + 900, small: true });
+    } else {
+      state.dropped++; state.lives--; missed = true; state.noSplat = false; state.missLeft = isL(it.chute);
+    }
+  }
+  state.items = keep;
+  if (missed) {
+    state.mode = 'miss'; state.pauseStart = now; state.missUntil = now + 950;
+    return;
+  }
+  const p = Math.pow(diff(prog), CONFIG.ease);
+  state.sinceSpawn++;
+  const cap = Math.round(lerp(CONFIG.maxOnScreen[0], CONFIG.maxOnScreen[1], p));
+  const gap = Math.round(lerp(CONFIG.minGap[0], CONFIG.minGap[1], p));
+  if (state.items.length < cap && state.sinceSpawn >= gap && Math.random() < lerp(CONFIG.spawnP[0], CONFIG.spawnP[1], p)) {
+    spawn(); state.sinceSpawn = 0;
+  }
+}
+
+function gameClock(el) {
+  const m = Math.min(CONFIG.dayMinutes, Math.floor(el / CONFIG.dayMs * CONFIG.dayMinutes / 5) * 5);
+  return { h: CONFIG.startHour + Math.floor(m / 60), m: m % 60 };
+}
+function bodyWord(n) { return n === 1 ? 'bod' : (n >= 2 && n <= 4) ? 'body' : 'bodů'; }
+
+function finish(win, now) {
+  state.endElapsed = win ? CONFIG.dayMs : elapsed(now);
+  state.mode = 'over'; state.overAt = now; state.items = []; state.win = win;
+  let best = 0;
+  try { best = +localStorage.getItem('fusatytata-best') || 0; if (state.score > best) localStorage.setItem('fusatytata-best', state.score); } catch (e) {}
+  const isRecord = state.score > best;
+  const pts = `${state.score} ${bodyWord(state.score)}`;
+  const caughtWork = Object.entries(state.caught).filter(([k]) => !CONFIG.items[k].life && !CONFIG.items[k].trap).reduce((s, [, v]) => s + v, 0);
+  const total = caughtWork + state.dropped;
+  document.getElementById('resKicker').textContent = (win ? 'Den dotažený' : 'Tři deadliny') + `, hra ${state.level}`;
+  document.getElementById('resTitle').textContent = win ? `Game is on! ${pts}.` : `Konec dne. ${pts}.`;
+  document.getElementById('resLine').textContent = `Dotaženo ${caughtWork} z ${total}.`;
+  const chips = document.getElementById('resChips');
+  chips.innerHTML = '';
+  for (const [k, def] of Object.entries(CONFIG.items)) {
+    const n = state.caught[k]; if (!n) continue;
+    const s = document.createElement('span'); s.className = 'chip';
+    s.textContent = `${def.name} ×${n}`; chips.appendChild(s);
+  }
+  if (state.avoided) {
+    const s = document.createElement('span'); s.className = 'chip';
+    s.textContent = `Odmítnuté pasti ×${state.avoided}`; chips.appendChild(s);
+  }
+  document.getElementById('resBest').textContent = isRecord ? 'Nový rekord.' : `Rekord: ${best}`;
+  document.getElementById('result').hidden = false;
+}
+
+// ---------- render ----------
+function lcdText(txt, x, y, size, align = 'center') {
+  ctx.font = `${size}px ${LCDFONT}`; ctx.textAlign = align; ctx.fillText(txt, x, y);
+}
+function draw(now) {
+  if (!backdrop || cv.width !== lastW) { buildBackdrop(); lastW = cv.width; }
+  const sx = cv.width / W, sy = cv.height / H;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(backdrop, 0, 0, cv.width, cv.height);
+  ctx.setTransform(sx, 0, 0, sy, 0, 0);
+  ctx.fillStyle = C.ink; ctx.strokeStyle = C.ink;
+
+  // ghost segments (no shadow)
+  ctx.shadowColor = 'transparent';
+  ctx.globalAlpha = GHOST;
+  for (const ch of Object.keys(CONFIG.chutes)) for (let i = 0; i < 5; i++) { const p = slot(ch, i); drawIcon(ctx, 'slot', p.x, p.y); }
+  for (const l of [true, false]) { const f = fallSpot(l); drawIcon(ctx, 'splat', f.x, f.y); }
+  for (const p of ['LU', 'LD', 'RU', 'RD']) if (p !== state.pos) armPath(ctx, p);
+  for (let k = 0; k < 3; k++) heart(ctx, 178 + k * 22, 20, 7);
+  lcdText('DOP', 12, 20, 13, 'left'); lcdText('ODP', 12, 31, 13, 'left');
+  lcdText('HRA A', 92, 257, 14); lcdText('HRA B', 308, 257, 14);
+  ctx.globalAlpha = 1;
+
+  // lit segments cast a faint shadow onto the print, like a real LCD
+  ctx.shadowColor = C.shadow; ctx.shadowOffsetX = 1.3 * sx; ctx.shadowOffsetY = 1.3 * sy; ctx.shadowBlur = 0.6 * sx;
+
+  // clock: real time when idle, the working day while playing
+  let hh, mm;
+  if (state.mode === 'idle') { const d = new Date(); hh = d.getHours(); mm = d.getMinutes(); }
+  else { const t = gameClock(elapsed(now)); hh = t.h; mm = t.m; }
+  lcdText(hh < 12 ? 'DOP' : 'ODP', 12, hh < 12 ? 20 : 31, 13, 'left');
+  const h12 = String(hh).padStart(2, '0'), m2 = String(mm).padStart(2, '0');
+  digit(ctx, 38, 8, +h12[0]); digit(ctx, 54, 8, +h12[1]);
+  const blink = state.mode !== 'play' || Math.floor(now / 500) % 2 === 0;
+  if (blink) { ctx.fillRect(70.5, 13, 3, 3); ctx.fillRect(70.5, 23, 3, 3); }
+  digit(ctx, 77, 8, +m2[0]); digit(ctx, 93, 8, +m2[1]);
+
+  const sc = String(Math.min(9999, state.score));
+  for (let k = 0; k < 4; k++) {
+    const idx = k - (4 - sc.length);
+    const show = state.mode !== 'idle' && idx >= 0;
+    digit(ctx, W - 12 - (4 - k) * 17 + 4, 8, show ? +sc[idx] : null);
+  }
+
+  // lives
+  for (let k = 0; k < state.lives; k++) heart(ctx, 178 + k * 22, 20, 7);
+
+  // mode indicator
+  if (state.mode !== 'idle' || Math.floor(now / 600) % 2 === 0) {
+    if (state.mode === 'idle' || state.level === 'A') lcdText('HRA A', 92, 257, 14);
+    if (state.mode === 'idle' || state.level === 'B') lcdText('HRA B', 308, 257, 14);
+  }
+
+  // character
+  armPath(ctx, state.pos);
+  drawBody(ctx);
+  drawHead(ctx);
+
+  // items
+  for (const it of state.items) {
+    const p = slot(it.chute, it.i);
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((it.i % 2 ? 0.18 : -0.18) * (isL(it.chute) ? 1 : -1));
+    drawItem(ctx, it.type, 0, 0); ctx.restore();
+  }
+
+  // miss
+  if (state.mode === 'miss' && !state.noSplat && Math.floor(now / 140) % 2 === 0) {
+    const f = fallSpot(state.missLeft);
+    drawIcon(ctx, 'splat', f.x, f.y);
+    lcdText('DEADLINE!', f.x, f.y - 16, 18);
+  }
+
+  // pops
+  state.pops = state.pops.filter(p => p.until > now);
+  for (const p of state.pops) lcdText(p.text, p.x, p.y, p.small ? 14 : 18);
+
+  // messages drawn as LCD text, not as an overlay
+  if (state.mode === 'idle' && Math.floor(now / 700) % 2 === 0) lcdText('STISKNI HRA A', 200, 46, 17);
+  if (state.mode === 'paused' && state.userPaused) lcdText('PAUZA', 200, 46, 20);
+  if (state.mode === 'over') lcdText(state.win ? 'GAME IS ON!' : 'KONEC DNE', 200, 47, 22);
+
+  ctx.shadowColor = 'transparent';
+}
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (state.mode === 'play') {
+    const el = elapsed(now);
+    if (el >= CONFIG.dayMs) finish(true, now);
+    else if (now - state.lastTick >= lerp(CONFIG.tickMs[0], CONFIG.tickMs[1], Math.pow(diff(el / CONFIG.dayMs), CONFIG.ease))) { state.lastTick = now; tick(now); }
+  } else if (state.mode === 'miss' && now >= state.missUntil) {
+    if (state.lives <= 0) finish(false, now);
+    else { state.paused += now - state.pauseStart; state.mode = 'play'; state.lastTick = now; }
+  }
+  draw(now);
+}
+
+// ---------- input ----------
+const canStart = () => state.mode === 'idle' || (state.mode === 'over' && performance.now() - state.overAt > 700);
+function togglePause() {
+  const now = performance.now();
+  if (state.mode === 'play') { state.mode = 'paused'; state.userPaused = true; state.pauseStart = now; }
+  else if (state.mode === 'paused') { state.paused += now - state.pauseStart; state.mode = 'play'; state.userPaused = false; state.lastTick = now; }
+}
+document.addEventListener('keydown', e => {
+  const k = e.key, lk = k.toLowerCase();
+  const map = { q: 'LU', a: 'LD', p: 'RU', l: 'RD' };
+  if (map[lk]) { setPos(map[lk]); return; }
+  if (k === 'ArrowLeft')  { setPos('L' + state.pos[1]); e.preventDefault(); return; }
+  if (k === 'ArrowRight') { setPos('R' + state.pos[1]); e.preventDefault(); return; }
+  if (k === 'ArrowUp')    { setPos(state.pos[0] + 'U'); e.preventDefault(); return; }
+  if (k === 'ArrowDown')  { setPos(state.pos[0] + 'D'); e.preventDefault(); return; }
+  if (k === ' ' || k === 'Enter') {
+    if (e.target.closest && e.target.closest('button')) return;
+    e.preventDefault();
+    if (!splash.hidden) { leaveSplash('A'); return; }
+    if (canStart()) start('A'); else if (state.mode === 'play' || state.mode === 'paused') togglePause();
+  }
+});
+document.querySelectorAll('.rbtn').forEach(b => {
+  b.addEventListener('pointerdown', e => { e.preventDefault(); setPos(b.dataset.pos); });
+  b.addEventListener('click', e => { if (e.detail === 0) setPos(b.dataset.pos); });
+});
+screenEl.addEventListener('pointerdown', e => {
+  if (canStart()) { start('A'); return; }
+  if (state.mode === 'over') return;
+  if (state.mode === 'paused' && state.userPaused) { togglePause(); return; }
+  const r = screenEl.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  setPos((x < 0.5 ? 'L' : 'R') + (y < 0.55 ? 'U' : 'D'));
+});
+document.getElementById('btnA').addEventListener('click', () => start('A'));
+document.getElementById('btnB').addEventListener('click', () => start('B'));
+document.getElementById('btnT').addEventListener('click', togglePause);
+document.getElementById('againBtn').addEventListener('click', () => { start(state.level); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+document.addEventListener('visibilitychange', () => {
+  const now = performance.now();
+  if (document.hidden && state.mode === 'play') { state.mode = 'paused'; state.userPaused = false; state.pauseStart = now; }
+  else if (!document.hidden && state.mode === 'paused' && !state.userPaused) { state.paused += now - state.pauseStart; state.mode = 'play'; state.lastTick = now; }
+});
+
+// ---------- skins ----------
+const device = document.getElementById('device');
+function setSkin(s) {
+  device.dataset.skin = s;
+  document.getElementById('skin-original').setAttribute('aria-pressed', s === 'original');
+  document.getElementById('skin-fusaty').setAttribute('aria-pressed', s === 'fusaty');
+  try { localStorage.setItem('fusatytata-skin2', s); } catch (e) {}
+}
+document.getElementById('skin-original').addEventListener('click', () => setSkin('original'));
+document.getElementById('skin-fusaty').addEventListener('click', () => setSkin('fusaty'));
+try { const s = localStorage.getItem('fusatytata-skin2'); if (s === 'fusaty' || s === 'original') setSkin(s); } catch (e) {}
+
+// ---------- legend ----------
+const legend = document.getElementById('legend');
+const dpr = window.devicePixelRatio || 1;
+for (const [k, def] of Object.entries(CONFIG.items)) {
+  const li = document.createElement('li');
+  const c = document.createElement('canvas'); c.width = c.height = 34 * dpr;
+  const g = c.getContext('2d'); g.scale(dpr, dpr);
+  g.fillStyle = C.lcd; g.fillRect(0, 0, 34, 34);
+  g.fillStyle = C.ink; g.strokeStyle = C.ink; drawItem(g, k, 17, 17, def.trap ? 1.25 : 1.0);
+  if (def.trap && !legend.querySelector('.sep')) {
+    const sep = document.createElement('li'); sep.className = 'sep'; sep.textContent = 'Pasti. Nech je spadnout.';
+    legend.appendChild(sep);
+  }
+  const name = document.createElement('span'); name.textContent = def.name;
+  const pts = document.createElement('span'); pts.className = 'pts';
+  pts.textContent = def.costsLife ? '−1 život' : def.life ? '+1 život' : def.pts < 0 ? `−${-def.pts} ${bodyWord(-def.pts)}` : `${def.pts} ${bodyWord(def.pts)}`;
+  if (def.trap) pts.classList.add('neg');
+  li.append(c, name, pts); legend.appendChild(li);
+}
+
+// ---------- splash: the purple screen the CV hands over to ----------
+const splash = document.getElementById('splash');
+const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function leaveSplash(level) {
+  if (splash.classList.contains('out')) return;
+  splash.classList.add('out');
+  const go = () => { splash.hidden = true; start(level); };
+  if (reducedMotion) go(); else setTimeout(go, 760);
+}
+document.getElementById('goA').addEventListener('click', () => leaveSplash('A'));
+document.getElementById('goB').addEventListener('click', () => leaveSplash('B'));
+// Z CV přes Hrej mě (#start): čistá fialová jen dokončí přechod, stáhne se a odkryje krabičku.
+// Hra se nespouští, čeká na tlačítko hra A / hra B. Při přímém otevření (fusatytata.cz) zůstává úvodní volba.
+if (document.documentElement.classList.contains('from-cv')) {
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  requestAnimationFrame(() => {
+    splash.classList.add('out');
+    setTimeout(() => { splash.hidden = true; }, reducedMotion ? 0 : 480);
+  });
+}
+
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { backdrop = null; });
+setPos('LD');
+requestAnimationFrame(frame);
+</script>
+
+
+<script>
+// Česká typografie: nezlomitelná mezera za jednopísmennými a krátkými předložkami a spojkami,
+// mezi číslem a slovem, uvnitř data a před pomlčkou. Funguje na všech textech stránky, i po přenosu nových.
+(function () {
+  const short = 'k|s|v|z|o|u|a|i|K|S|V|Z|O|U|A|I|na|do|od|po|za|ve|ze|se|ke|ku|pro|při|bez|nad|pod|před|přes|Na|Do|Od|Po|Za|Ve|Ze|Se|Ke|Pro|Při|Bez|Nad|Pod|Před|Přes';
+  const rePrep = new RegExp('(^|[\\s\\u00A0(„"])(' + short + ') (?=\\S)', 'g');
+  const reNumWord = /(\d) (?=[a-záčďéěíňóřšťúůýž])/g;
+  const reDate = /(\d\.) (?=\d)/g;
+  const reDash = / (–)/g;
+  const fix = s => {
+    let t = s;
+    for (let i = 0; i < 2; i++) t = t.replace(rePrep, '$1$2 ');
+    return t.replace(reNumWord, '$1 ').replace(reDate, '$1 ').replace(reDash, ' $1');
+  };
+  const skip = /^(SCRIPT|STYLE|TEXTAREA|CODE|PRE)$/;
+  const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.parentElement && skip.test(n.parentElement.tagName)) || !/\S/.test(n.nodeValue) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+  });
+  const nodes = [];
+  while (walk.nextNode()) nodes.push(walk.currentNode);
+  nodes.forEach(n => { const v = fix(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; });
+})();
+</script>
+</body></html>
