@@ -1,28 +1,19 @@
-<!doctype html>
-<html lang="cs">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Chytej, co se počítá – hra Šimona Kořenýho</title>
-<meta name="description" content="Retro hra podle Nu, pogodi: chytej úkoly do koše a pasti nech spadnout.">
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Fusaty Tata | Chytej, co se počítá</title>
+<meta name="description" content="Hra na 45 sekund: chytej úkoly do koše, pasti nech spadnout.">
 <link rel="canonical" href="https://simonkoreny.cz/hra/">
-<meta name="theme-color" content="#F0EFEE">
-<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
-<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="cs_CZ">
-<meta property="og:site_name" content="Šimon Kořený">
-<meta property="og:title" content="Chytej, co se počítá – hra Šimona Kořenýho">
-<meta property="og:description" content="Retro hra podle Nu, pogodi: chytej úkoly do koše a pasti nech spadnout.">
+<meta property="og:title" content="Fusaty Tata | Chytej, co se počítá">
+<meta property="og:description" content="Hra na 45 sekund: chytej úkoly do koše, pasti nech spadnout.">
 <meta property="og:url" content="https://simonkoreny.cz/hra/">
 <meta property="og:image" content="https://simonkoreny.cz/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:locale" content="cs_CZ">
 <meta name="twitter:card" content="summary_large_image">
-<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Fira+Mono:wght@500&family=Fira+Sans:wght@400;600&family=VT323&display=swap">
+</head><body>
 <style>
 /* Layout: a faithful 1984-style LCD handheld (cream face plate, colour-printed backdrop under a monochrome LCD), two case skins, rules below. Single light page. */
 :root {
@@ -69,10 +60,19 @@ body {
 /* ---------- device ---------- */
 .device-wrap { container-type: inline-size; width: min(100%, calc((100dvh - 150px) * 1.66)); min-width: min(280px, 100%); margin: 0 auto; }
 /* phone on its side: hide the logo and let the toy fill the screen height */
+/* telefon na šířku: jen hra. Stránka se nescrolluje, krabička je přes celou obrazovku, výsledek se ukáže přes ni. */
+.l-only { display: none; }
 @media (orientation: landscape) and (max-height: 520px) {
-  body { padding-block: 6px 24px; }
-  .top { display: none; }
-  .device-wrap { width: min(100%, calc((100dvh - 12px) * 1.66)); }
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { padding-block: 0; }
+  .wrap { height: 100%; justify-content: center; gap: 0; }
+  .top, .under, footer.foot, .card > div:not(.result) { display: none !important; }
+  .device-wrap { width: min(100%, calc((100vh - 12px) * 1.66)); width: min(100%, calc((100svh - 12px) * 1.66)); }
+  body .card { position: fixed; inset: 0; z-index: 20; margin: 0; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); display: grid; place-items: center; pointer-events: none; background: none; border: 0; }
+  body .result { pointer-events: auto; width: min(440px, 100%); max-height: 100%; overflow: auto; padding: 18px 20px; gap: 8px; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35); }
+  body .result .big { font-size: 34px; }
+  body .result p { font-size: 16px; }
+  .l-only { display: inline-flex; align-items: center; justify-content: center; }
 }
 .device {
   font-family: var(--body); font-size: var(--fs-base); color: var(--ink-2); line-height: 1.6;
@@ -173,8 +173,6 @@ html.from-cv .splash .in { visibility: hidden; }
 .splash .btn.ghost { background: transparent; color: var(--bg); border: 3px solid var(--bg); }
 @media (prefers-reduced-motion: reduce) { .rbtn, .pill, .splash { transition: none; } }
 </style>
-</head>
-<body>
 
 <script>if (location.hash === '#start') document.documentElement.classList.add('from-cv');</script>
 <div class="splash" id="splash">
@@ -243,6 +241,7 @@ html.from-cv .splash .in { visibility: hidden; }
       <div class="chips" id="resChips"></div>
       <div class="row">
         <button class="again" id="againBtn">Znovu</button>
+        <button class="again l-only" id="resClose" type="button" style="background: transparent; color: var(--bg); box-shadow: inset 0 0 0 3px var(--bg);">Zavřít</button>
         <span class="muted" id="resBest"></span>
       </div>
     </div>
@@ -843,6 +842,18 @@ if (document.documentElement.classList.contains('from-cv')) {
     setTimeout(() => { splash.hidden = true; }, reducedMotion ? 0 : 480);
   });
 }
+
+// ---------- telefon na šířku: jen hra ----------
+// stránka se na šířku nescrolluje; po otočení vrátit na začátek, aby krabička byla celá vidět
+(function () {
+  const mq = window.matchMedia('(orientation: landscape) and (max-height: 520px)');
+  const reset = () => { if (mq.matches) setTimeout(() => window.scrollTo(0, 0), 60); };
+  if (mq.addEventListener) mq.addEventListener('change', reset); else if (mq.addListener) mq.addListener(reset);
+  window.addEventListener('orientationchange', reset);
+  reset();
+  const close = document.getElementById('resClose');
+  if (close) close.addEventListener('click', () => { document.getElementById('result').hidden = true; });
+})();
 
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { backdrop = null; });
 setPos('LD');
