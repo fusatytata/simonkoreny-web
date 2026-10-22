@@ -1,0 +1,265 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jak to vzniklo | Šimon Kořený</title>
+<meta name="description" content="Večer 20. října přišel nápad a ráno 21. bylo hotovo. Web, CV i hra s AI, celý postup i s tím, co nevyšlo.">
+<link rel="canonical" href="https://simonkoreny.cz/jak-to-vzniklo/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jak to vzniklo | Šimon Kořený">
+<meta property="og:description" content="Večer 20. října přišel nápad a ráno 21. bylo hotovo. Web, CV i hra s AI, celý postup i s tím, co nevyšlo.">
+<meta property="og:url" content="https://simonkoreny.cz/jak-to-vzniklo/">
+<meta property="og:image" content="https://simonkoreny.cz/assets/og.png">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+<style>
+/* Layout: stejný plakát jako CV. Obří nadpis, černý pásek s daty, krátké sekce s nadpisem vlevo (od 900 px), Kdo co dělal jako dvě barevné plochy vedle sebe, černá patička zpět do CV. Jeden světlý vzhled. */
+:root {
+  --paper: #F0EFEE;
+  --paper-2: #E6E4E2;
+  --ink: #000000;
+  --ink-2: #212121;
+  --muted: #4a4452;
+  --purple: #5F449A;
+  --purple-soft: #D9CFF0;
+  --purple-on-ink: #B9A6E0;
+  --skin: #EAB275;
+  --font: "Bricolage Grotesque", Georgia, serif;
+  --col: 528px;
+  --gmin: 16px;
+  color-scheme: light;
+}
+@view-transition { navigation: auto; }
+* { box-sizing: border-box; }
+html, body { background: var(--paper); }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; }
+.page { overflow-x: clip; }
+.gut {
+  padding-left: max(var(--gmin), env(safe-area-inset-left, 0px), calc((100% - var(--col)) / 2));
+  padding-right: max(var(--gmin), env(safe-area-inset-right, 0px), calc((100% - var(--col)) / 2));
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+h2 { font-size: 46px; line-height: 1; font-weight: 800; letter-spacing: -.035em; }
+section.block { padding-top: 80px; }
+
+.top { padding-block: 16px 0; display: flex; justify-content: space-between; align-items: center; }
+.top img { width: 120px; height: auto; display: block; }
+.back-pill { min-height: 48px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 16px; text-decoration: none; transition: background-color .2s; }
+
+.hero { padding-block: 40px 48px; }
+.role-tag { margin-bottom: 24px; font-size: 16px; font-weight: 600; color: var(--purple); }
+.hero h1 { font-size: 80px; line-height: .88; font-weight: 800; letter-spacing: -.045em; }
+.thanks { margin-top: 16px; max-width: 46ch; color: var(--ink-2); }
+.lead { margin-top: 28px; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.015em; max-width: 26ch; }
+
+.strip { background: var(--ink); color: var(--paper); padding-block: 14px; }
+.strip p { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; font-size: 20px; font-weight: 700; line-height: 1.3; }
+.strip .sl { color: var(--skin); }
+
+.facts { margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; font-size: 21px; line-height: 1.35; font-weight: 700; }
+.note { margin-top: 28px; color: var(--ink-2); max-width: 60ch; }
+
+.steps { margin: 28px 0 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 22px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.steps li::before { content: counter(s); font-size: 30px; font-weight: 800; line-height: 1; color: var(--purple); font-variant-numeric: tabular-nums; }
+.steps b { display: block; font-size: 21px; line-height: 1.2; }
+
+.who { margin-top: 24px; display: grid; gap: 12px; }
+.who > div { padding: 28px 22px 32px; }
+.who h3 { margin-bottom: 18px; font-size: 30px; line-height: 1; font-weight: 800; letter-spacing: -.025em; }
+.who ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.who .me { background: var(--purple); color: var(--paper); }
+.who .me h3 { color: var(--skin); }
+.who .ai { background: var(--ink); color: var(--paper); }
+.who .ai h3 { color: var(--purple-on-ink); }
+
+.fails { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 22px; }
+.fails b { display: block; font-size: 21px; line-height: 1.2; }
+
+.tools { margin: 24px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 19px; }
+
+.letter { margin-top: 80px; background: var(--paper-2); padding-block: 56px; }
+.letter .body { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; max-width: 62ch; }
+
+footer { margin-top: 80px; background: var(--ink); color: var(--paper); padding-block: 64px 48px; display: flex; flex-direction: column; align-items: flex-start; }
+footer h2 { margin-bottom: 32px; font-size: 68px; line-height: .9; letter-spacing: -.045em; }
+.btn { min-height: 56px; padding: 0 24px; border-radius: 999px; background: var(--skin); color: var(--ink); font-size: 18px; font-weight: 700; display: inline-flex; align-items: center; text-decoration: none; transition: box-shadow .2s; }
+.foot-row { margin-top: 72px; width: 100%; }
+.foot-row img { width: 170px; height: auto; display: block; }
+
+@media (min-width: 900px) {
+  :root { --col: 1180px; --gmin: 40px; }
+  body { font-size: 18px; }
+  h2 { font-size: 64px; }
+  section.block { padding-top: 136px; }
+  .top { padding-block: 28px 0; }
+  .top img { width: 150px; }
+  .hero { padding-block: 64px 96px; }
+  .role-tag { font-size: 19px; margin-bottom: 28px; }
+  .hero h1 { font-size: clamp(120px, 11.6vw, 172px); }
+  .lead { margin-top: 40px; font-size: 32px; }
+  .thanks { margin-top: 20px; font-size: 19px; }
+  .strip { padding-block: 22px; }
+  .strip p { justify-content: space-between; font-size: 30px; }
+  .split { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); column-gap: 56px; align-items: start; }
+  .split > h2 { position: sticky; top: 32px; }
+  .facts, .steps, .fails, .tools { margin-top: 6px; }
+  .facts { font-size: 28px; gap: 18px; }
+  .who { margin-top: 44px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .who > div { padding: 40px 32px 44px; }
+  .who h3 { font-size: 40px; }
+  .letter { margin-top: 136px; padding-block: 104px; }
+  .letter .body { margin-top: 6px; font-size: 19px; }
+  footer { margin-top: 136px; padding-block: 120px 56px; }
+  footer h2 { font-size: clamp(96px, 10vw, 150px); }
+  .foot-row { margin-top: 112px; }
+  .foot-row img { width: 200px; }
+}
+@media (hover: hover) {
+  .back-pill:hover { background: var(--purple); }
+  .btn:hover { box-shadow: 0 0 0 4px var(--paper); }
+}
+</style>
+</head><body>
+<div class="page">
+
+  <header class="top gut">
+    <img src="assets/logo-light.png" alt="Fusaty Tata, since 2020" width="706" height="212">
+    <a class="back-pill" href="../cv/">Zpět do CV</a>
+  </header>
+
+  <section class="hero gut">
+    <p class="role-tag">Šimon Kořený</p>
+    <h1>Jak to vzniklo</h1>
+    <p class="lead">Večer 20. října přišel nápad a ráno 21. bylo hotovo. Web, CV i hru jsem postavil s AI, tady je celý postup, i s tím, co nevyšlo.</p>
+    <p class="thanks">Díky za váš impuls – to byl moment, který ve mně znovu probudil chuť dělat tyhle vylomeniny.</p>
+  </section>
+
+  <div class="strip gut">
+    <p><span>20. 10.</span><span class="sl" aria-hidden="true">/</span><span>21. 10.</span><span class="sl" aria-hidden="true">/</span><span>6 vláken</span><span class="sl" aria-hidden="true">/</span><span>Claude</span><span class="sl" aria-hidden="true">/</span><span>já</span></p>
+  </div>
+
+  <section class="block gut split">
+    <h2>Ve zkratce</h2>
+    <div>
+      <ul class="facts">
+        <li>Od večera 20. 10. do rána 21. 10.</li>
+        <li>Šest pracovních vláken s Claudem.</li>
+        <li>Čtyři verze CV a šest designů, ze kterých jsem vybíral.</li>
+        <li>Devět verzí hry ve třech větvích.</li>
+      </ul>
+      <p class="note">Frontend jsem se učil sám v roce 2023. Nikdy jsem si nefandil, že bych byl nejlepší vývojář. Ale vím, co chci, umím to zadat a dotáhnout.</p>
+    </div>
+  </section>
+
+  <section class="block gut split">
+    <h2>Jak to šlo</h2>
+    <ol class="steps">
+      <li><span><b>Zadání</b>Vybral jsem si pozici u vás a rozhodl se místo motivačního dopisu poslat web.</span></li>
+      <li><span><b>Hra</b>Mechanika podle Nu, pogodi. Ceník priorit a pasti jsem si určil sám.</span></li>
+      <li><span><b>Texty</b>Kostru napsala AI, pak jsem všechno přepsal svým hlasem.</span></li>
+      <li><span><b>Písmo a telefon</b>Písmo jsem měnil třikrát, než sedělo. Pak jsem stránku předělal, aby se dobře četla i na telefonu.</span></li>
+      <li><span><b>Design</b>Třetí verze CV mi přišla jako typický web od AI, tak vzniklo šest úplně jiných směrů. Vyhrál Plakát.</span></li>
+      <li><span><b>Nasazení</b>GitHub Pages a vlastní domény.</span></li>
+      <li><span><b>Testování</b>Automatické testy, moje maličkost a ochotná přítelkyně.</span></li>
+    </ol>
+  </section>
+
+  <section class="block gut">
+    <h2>Kdo co dělal</h2>
+    <div class="who">
+      <div class="me">
+        <h3>Já</h3>
+        <ul>
+          <li>Zadání a všechna rozhodnutí</li>
+          <li>Všechny texty</li>
+          <li>Ceník priorit a pasti ve hře</li>
+          <li>Testování na telefonech</li>
+          <li>Výběr designu a kritika</li>
+          <li>Fotky</li>
+        </ul>
+      </div>
+      <div class="ai">
+        <h3>AI</h3>
+        <ul>
+          <li>Kód stránek a hry</li>
+          <li>Kostra textů a korektury</li>
+          <li>Ladění tempa hry simulací</li>
+          <li>Kontrola v prohlížeči</li>
+          <li>Návrhy variant</li>
+          <li>Úprava fotek</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block gut split">
+    <h2>Co nevyšlo</h2>
+    <ul class="fails">
+      <li><b>Ukázka hry přímo v CV</b>Bylo toho moc a nefungovala dobře, nahradilo ji tlačítko Hrej mě.</li>
+      <li><b>Hra bez retro krabičky</b>Displej a ikony byly to nejlepší, tak se krabička vrátila.</li>
+      <li><b>Tempo hry</b>První verze byla moc rychlá, další moc pomalá, trefa přišla až na třetí pokus.</li>
+      <li><b>Vylepšení fotky přes AI</b>Překreslila by mi obličej, takže jen klasická úprava.</li>
+      <li><b>Fotka na pozadí hor</b>Chtěl jsem hory, ale nakonec mi to víc sluší bez nich.</li>
+    </ul>
+  </section>
+
+  <section class="block gut split">
+    <h2>Nástroje</h2>
+    <ul class="tools">
+      <li>Claude: projekty, artefakty a dokumenty na texty.</li>
+      <li>GitHub Pages a domény u Wedosu.</li>
+      <li>Písmo Bricolage Grotesque a barvy Fusaty Tata.</li>
+    </ul>
+  </section>
+
+  <footer class="gut">
+    <h2>Těším se.</h2>
+    <a class="btn" href="../cv/">Zpět do CV</a>
+    <div class="foot-row">
+      <img src="assets/logo-light.png" alt="Fusaty Tata, since 2020" width="706" height="212">
+    </div>
+  </footer>
+</div>
+<script>
+// po příchodu z patičky CV začít vždy od začátku stránky
+try { history.scrollRestoration = 'manual'; } catch (e) {}
+function toTop() {
+  window.scrollTo(0, 0);
+  const top = document.querySelector('.top');
+  if (top && top.scrollIntoView) top.scrollIntoView({ block: 'start' });
+}
+toTop();
+window.addEventListener('pageshow', toTop);
+</script>
+<script>
+// Česká typografie: nezlomitelná mezera za jednopísmennými a krátkými předložkami a spojkami,
+// mezi číslem a slovem, uvnitř data a před pomlčkou. Funguje na všech textech stránky, i po přenosu nových.
+(function () {
+  const short = 'k|s|v|z|o|u|a|i|K|S|V|Z|O|U|A|I|na|do|od|po|za|ve|ze|se|ke|ku|pro|při|bez|nad|pod|před|přes|Na|Do|Od|Po|Za|Ve|Ze|Se|Ke|Pro|Při|Bez|Nad|Pod|Před|Přes';
+  const rePrep = new RegExp('(^|[\\s\\u00A0(„"])(' + short + ') (?=\\S)', 'g');
+  const reNumWord = /(\d) (?=[a-záčďéěíňóřšťúůýž])/g;
+  const reDate = /(\d\.) (?=\d)/g;
+  const reDash = / (–)/g;
+  const fix = s => {
+    let t = s;
+    for (let i = 0; i < 2; i++) t = t.replace(rePrep, '$1$2 ');
+    return t.replace(reNumWord, '$1 ').replace(reDate, '$1 ').replace(reDash, ' $1');
+  };
+  const skip = /^(SCRIPT|STYLE|TEXTAREA|CODE|PRE)$/;
+  const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.parentElement && skip.test(n.parentElement.tagName)) || !/\S/.test(n.nodeValue) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+  });
+  const nodes = [];
+  while (walk.nextNode()) nodes.push(walk.currentNode);
+  nodes.forEach(n => { const v = fix(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; });
+})();
+</script>
+</body></html>
